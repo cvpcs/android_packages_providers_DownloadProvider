@@ -105,17 +105,17 @@ class DownloadNotification {
         mNotifications = new HashMap<String, NotificationItem>();
 
         mNotificationTitleColor = Settings.System.getInt(
-                context.getContentResolver(),
+                mContext.getContentResolver(),
                 Settings.System.COLOR_NOTIFICATION_ITEM_TITLE,
                 mBlackColor
                 );
         mNotificationTextColor = Settings.System.getInt(
-                context.getContentResolver(),
+                mContext.getContentResolver(),
                 Settings.System.COLOR_NOTIFICATION_ITEM_TEXT,
                 mBlackColor
                 );
         mNotificationProgressTextColor = Settings.System.getInt(
-                context.getContentResolver(),
+                mContext.getContentResolver(),
                 Settings.System.COLOR_NOTIFICATION_ITEM_PROGRESS_TEXT,
                 mBlackColor
                 );
