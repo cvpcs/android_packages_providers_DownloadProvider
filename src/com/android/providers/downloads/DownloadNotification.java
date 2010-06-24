@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.Downloads;
+import android.provider.Settings;
 import android.widget.RemoteViews;
 
 import java.util.HashMap;
@@ -40,7 +41,12 @@ class DownloadNotification {
     Context mContext;
     public NotificationManager mNotificationMgr;
     HashMap <String, NotificationItem> mNotifications;
-    
+
+    int mBlackColor = 0xff000000;
+    int mNotificationTitleColor = mBlackColor;
+    int mNotificationTextColor = mBlackColor;
+    int mNotificationProgressTextColor = mBlackColor;
+
     static final String LOGTAG = "DownloadNotification";
     static final String WHERE_RUNNING = 
         "(" + Downloads.Impl.COLUMN_STATUS + " >= '100') AND (" +
@@ -98,6 +104,22 @@ class DownloadNotification {
         mNotificationMgr = (NotificationManager) mContext
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         mNotifications = new HashMap<String, NotificationItem>();
+
+        mNotificationTitleColor = Settings.System.getInt(
+                mContext.getContentResolver(),
+                Settings.System.COLOR_NOTIFICATION_ITEM_TITLE,
+                mBlackColor
+                );
+        mNotificationTextColor = Settings.System.getInt(
+                mContext.getContentResolver(),
+                Settings.System.COLOR_NOTIFICATION_ITEM_TEXT,
+                mBlackColor
+                );
+        mNotificationProgressTextColor = Settings.System.getInt(
+                mContext.getContentResolver(),
+                Settings.System.COLOR_NOTIFICATION_ITEM_PROGRESS_TEXT,
+                mBlackColor
+                );
     }
     
     /*
@@ -188,14 +210,19 @@ class DownloadNotification {
             } else {
                 expandedView.setTextViewText(R.id.description, 
                         item.mDescription);
+                expandedView.setTextColor(R.id.description, 
+                        mNotificationTextColor);
             }
             expandedView.setTextViewText(R.id.title, title);
+            expandedView.setTextColor(R.id.title, mNotificationTitleColor);
             expandedView.setProgressBar(R.id.progress_bar, 
                     item.mTotalTotal,
                     item.mTotalCurrent,
                     item.mTotalTotal == -1);
             expandedView.setTextViewText(R.id.progress_text, 
                     getDownloadingText(item.mTotalTotal, item.mTotalCurrent));
+            expandedView.setTextColor(R.id.progress_text,
+                    mNotificationProgressTextColor);
             expandedView.setImageViewResource(R.id.appIcon,
                     android.R.drawable.stat_sys_download);
             n.contentView = expandedView;
